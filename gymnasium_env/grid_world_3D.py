@@ -1,17 +1,13 @@
 from typing import Optional
 import numpy as np
 import gymnasium as gym
-import matplotlib
-matplotlib.use('TkAgg')  # Set the backend before importing pyplot
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 #
 # This code is based on the example available at:
 # https://gymnasium.farama.org/introduction/create_custom_env/
 #
 # The example above was adapted to create a 3D grid environment.
+# Note: Rendering requires tkinter (python3-tk) to be installed.
 #
 
 class GridWorldEnv(gym.Env):
@@ -22,7 +18,7 @@ class GridWorldEnv(gym.Env):
         self.size = size
         self.count_steps = 0
         self.max_steps = max_steps
-        
+
         # Rendering setup
         self.render_mode = render_mode
         self.fig = None
@@ -33,7 +29,7 @@ class GridWorldEnv(gym.Env):
         self._target_location = np.array([-1, -1, -1], dtype=np.int32)
 
         # Observations are dictionaries with the agent's and the target's location.
-        # Each location is encoded as an element of {0, ..., `size`-1}^2
+        # Each location is encoded as an element of {0, ..., `size`-1}^3
         self.observation_space = gym.spaces.Dict(
             {
                 "agent": gym.spaces.Box(0, size - 1, shape=(3,), dtype=int),
@@ -55,7 +51,7 @@ class GridWorldEnv(gym.Env):
 
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
-    
+
     def _get_info(self):
         return {
             "distance": np.linalg.norm(
@@ -63,7 +59,7 @@ class GridWorldEnv(gym.Env):
             ),
             "size": self.size
         }
-    
+
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
@@ -86,7 +82,7 @@ class GridWorldEnv(gym.Env):
             self._render_frame()
 
         return observation, info
-    
+
     def step(self, action):
         # Map the action (element of {0,1,2,3,4,5}) to the direction we walk in
         direction = self._action_to_direction[action]
@@ -100,17 +96,6 @@ class GridWorldEnv(gym.Env):
 
         # An environment is completed if and only if the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
-
-        # if terminated:
-        #     reward = 1
-
-        # if self.count_steps >= self.max_steps:
-        #     truncated = True
-        # else:
-        #     truncated = False
-
-        # if truncated:
-        #     reward = -1
 
         if terminated:
             reward = 1.0
@@ -131,29 +116,33 @@ class GridWorldEnv(gym.Env):
 
     def render(self):
         if self.render_mode == "human":
-            print("Rendering frame...")  # Debug print
             self._render_frame()
 
     def _render_frame(self):
+        try:
+            import matplotlib
+            matplotlib.use('TkAgg')
+            import matplotlib.pyplot as plt
+            from mpl_toolkits.mplot3d import Axes3D
+        except ImportError:
+            print("Warning: matplotlib or tkinter not available for rendering.")
+            return
+
         if self.fig is None:
-            plt.ion()  # Turn on interactive mode
+            plt.ion()
             self.fig = plt.figure(figsize=(10, 10))
             self.ax = self.fig.add_subplot(111, projection='3d')
-            plt.show(block=False)  # Show the window without blocking
-            
-            # Try to bring window to front if possible
+            plt.show(block=False)
             try:
-                # For Tk backend
                 self.fig.canvas.manager.window.lift()
             except:
                 try:
-                    # For Qt backend
                     self.fig.canvas.manager.window.raise_()
                 except:
-                    pass  # If neither method works, continue without raising window
+                    pass
 
         self.ax.clear()
-        
+
         # Set axis labels and limits
         self.ax.set_xlabel('X')
         self.ax.set_ylabel('Y')
@@ -165,36 +154,34 @@ class GridWorldEnv(gym.Env):
         # Draw grid lines
         for i in range(self.size):
             for j in range(self.size):
-                # Draw vertical lines
-                self.ax.plot([i, i], [j, j], [0, self.size-1], 'gray', alpha=0.2)
-                # Draw horizontal lines on each level
-                self.ax.plot([i, i], [0, self.size-1], [j, j], 'gray', alpha=0.2)
-                self.ax.plot([0, self.size-1], [i, i], [j, j], 'gray', alpha=0.2)
+                self.ax.plot([i, i], [j, j], [0, self.size - 1], 'gray', alpha=0.2)
+                self.ax.plot([i, i], [0, self.size - 1], [j, j], 'gray', alpha=0.2)
+                self.ax.plot([0, self.size - 1], [i, i], [j, j], 'gray', alpha=0.2)
 
         # Draw grid boundaries
         vertices = np.array([
-            [0, 0, 0], [self.size-1, 0, 0], [self.size-1, self.size-1, 0], [0, self.size-1, 0],
-            [0, 0, self.size-1], [self.size-1, 0, self.size-1], 
-            [self.size-1, self.size-1, self.size-1], [0, self.size-1, self.size-1]
+            [0, 0, 0], [self.size - 1, 0, 0], [self.size - 1, self.size - 1, 0], [0, self.size - 1, 0],
+            [0, 0, self.size - 1], [self.size - 1, 0, self.size - 1],
+            [self.size - 1, self.size - 1, self.size - 1], [0, self.size - 1, self.size - 1]
         ])
         edges = [
-            [vertices[0], vertices[1]], [vertices[1], vertices[2]], 
+            [vertices[0], vertices[1]], [vertices[1], vertices[2]],
             [vertices[2], vertices[3]], [vertices[3], vertices[0]],
-            [vertices[4], vertices[5]], [vertices[5], vertices[6]], 
+            [vertices[4], vertices[5]], [vertices[5], vertices[6]],
             [vertices[6], vertices[7]], [vertices[7], vertices[4]],
-            [vertices[0], vertices[4]], [vertices[1], vertices[5]], 
+            [vertices[0], vertices[4]], [vertices[1], vertices[5]],
             [vertices[2], vertices[6]], [vertices[3], vertices[7]]
         ]
         for edge in edges:
             self.ax.plot3D(*zip(*edge), color='black', linewidth=2)
 
         # Draw agent (blue sphere)
-        self.ax.scatter(self._agent_location[0], self._agent_location[1], 
-                       self._agent_location[2], color='blue', s=200, label='Agent')
-        
+        self.ax.scatter(self._agent_location[0], self._agent_location[1],
+                        self._agent_location[2], color='blue', s=200, label='Agent')
+
         # Draw target (red star)
-        self.ax.scatter(self._target_location[0], self._target_location[1], 
-                       self._target_location[2], color='red', marker='*', s=200, label='Target')
+        self.ax.scatter(self._target_location[0], self._target_location[1],
+                        self._target_location[2], color='red', marker='*', s=200, label='Target')
 
         # Add legend
         self.ax.legend()
@@ -207,10 +194,14 @@ class GridWorldEnv(gym.Env):
 
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
-        plt.pause(1)  # Smaller pause for smoother animation
+        plt.pause(1)
 
     def close(self):
         if self.fig is not None:
-            plt.close(self.fig)
+            try:
+                import matplotlib.pyplot as plt
+                plt.close(self.fig)
+            except:
+                pass
             self.fig = None
             self.ax = None

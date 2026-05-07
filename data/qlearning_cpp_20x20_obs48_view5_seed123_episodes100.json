@@ -1,0 +1,26 @@
+{
+  "description": "GridWorld CPP evaluation artifact with model configuration and metrics.",
+  "summary": {
+    "agent": "qlearning",
+    "model": "data\\qlearning_cpp_20x20_obs48_view5_seed321_episodes800.zip",
+    "grid_size": 20,
+    "obstacles": 48,
+    "max_steps": 800,
+    "view_size": 5,
+    "episodes": 100,
+    "seed": 123,
+    "coverage_target": 0.9,
+    "full_coverage_count": 100,
+    "good_coverage_count": 100,
+    "full_coverage_rate": 1.0,
+    "good_coverage_rate": 1.0,
+    "average_coverage": 1.0,
+    "coverage_std": 0.0,
+    "min_coverage": 1.0,
+    "max_coverage": 1.0,
+    "average_steps": 513.58,
+    "steps_std": 13.9392826214264,
+    "min_steps": 477,
+    "max_steps_observed": 560
+  }
+}

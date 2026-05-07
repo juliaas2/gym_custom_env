@@ -38,7 +38,7 @@ class GridWorldEnv(gym.Env):
 
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
-    
+
     def _get_info(self):
         return {
             "distance": np.linalg.norm(
@@ -46,7 +46,7 @@ class GridWorldEnv(gym.Env):
             ),
             "size": self.size
         }
-    
+
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
@@ -65,7 +65,7 @@ class GridWorldEnv(gym.Env):
         info = self._get_info()
 
         return observation, info
-    
+
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]

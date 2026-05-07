@@ -134,7 +134,7 @@ O espaço de observação para este ambiente é:
 
 * Localização do agente normalizado com relação a dimensão do grid (x/dim, y/dim)
 * Razão de células livres visitadas ou cobertura (células visitadas / total de células)
-* Uma matriz 3x3 representando as células vizinhas ao redor do agente, onde (1,1) é a posição do agente e cada célula é:
+* Uma matriz 5x5 representando as células vizinhas ao redor do agente, onde o agente fica sempre no centro e cada célula é:
   - 0 = livre (ainda não visitada)
   - 1 = obstáculo ou parede (incluindo limites fora do grid)
   - 2 = posição já visitada
@@ -183,3 +183,73 @@ O ambiente CPP possui renderização visual com as seguintes indicações:
 - **Branco**: células livres ainda não visitadas
 - **Texto no topo**: cobertura atual e número de passos
 
+## PPO recorrente para o projeto CPP
+
+O projeto agora também possui PPO recorrente, usando `sb3-contrib` (`RecurrentPPO`) com `MultiInputLstmPolicy`.
+Esse modelo usa observação parcial `5x5`, com o agente no centro, e salva os pesos da rede em `data/`.
+
+Para treinar PPO recorrente:
+
+```bash
+python train_grid_world_cpp.py train 20 48 800 100000 --view-size 5 --ppo-kind recurrent --model-output data/recurrent_ppo_cpp_20x20_obs48_view5_steps100000.zip
+```
+
+Para continuar o treino:
+
+```bash
+python train_grid_world_cpp.py curriculum 20 48 800 150000 --view-size 5 --model data/recurrent_ppo_cpp_20x20_obs48_view5_steps100000.zip --model-output data/recurrent_ppo_cpp_20x20_obs48_view5_steps250000.zip
+```
+
+Para avaliar o PPO salvo:
+
+```bash
+python train_grid_world_cpp.py test 20 48 --agent ppo --model data/recurrent_ppo_cpp_20x20_obs48_view5_steps250000.zip --view-size 5
+```
+
+Resultado medido do PPO recorrente em 50 episódios no 20x20:
+
+```text
+Coverage >= 90% Rate: 0.00% (0/50)
+Average Coverage: 6.60% deterministic
+Average Coverage: 50.94% stochastic
+```
+
+## Solução que bate o critério de cobertura
+
+A solução final usa Q-learning tabular, implementado em `utils/cpp_q_learning_agent.py`.
+O modelo salvo contém a Q-table aprendida, hiperparâmetros, métricas de treinamento e log dos episódios.
+
+O estado discreto usa a observação local centrada no agente (`5x5` por padrão, raio 2 em cada direção), máscaras locais de parede/células não visitadas, cobertura discretizada e memória das células descobertas durante o episódio.
+
+Para treinar novamente o modelo Q-learning principal:
+
+```bash
+python train_grid_world_cpp.py qtrain 20 48 800 800 --algorithm qlearning
+```
+
+Para avaliar diretamente o modelo salvo:
+
+```bash
+python train_grid_world_cpp.py test 20 48 --agent qlearning --model data/qlearning_cpp_20x20_obs48_view5_seed321_episodes800.zip
+```
+
+Resultado validado em 100 episódios no 20x20 com 48 obstáculos e limite de 800 passos:
+
+```text
+Full Coverage Rate: 100.00% (100/100)
+Coverage >= 90% Rate: 100.00% (100/100)
+Average Coverage: 100.00%
+Average Steps: 513.6
+Min Steps: 477
+Max Steps: 560
+```
+
+Para visualizar um episódio com renderização:
+
+```bash
+python run_grid_world_cpp.py --size 20 --obstacles 48 --max-steps 800 --render
+```
+
+O relatório curto da solução está em `relatorio_cpp.md`.
+O modelo final está em `data/qlearning_cpp_20x20_obs48_view5_seed321_episodes800.zip`.
+As métricas da avaliação principal estão em `data/qlearning_cpp_20x20_obs48_view5_seed123_episodes100.json`.

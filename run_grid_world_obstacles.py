@@ -1,6 +1,5 @@
 import gymnasium as gym
 from gymnasium_env.grid_world_obstacles import GridWorldRenderEnv
-from gymnasium.wrappers import FlattenObservation
 from stable_baselines3.common.env_checker import check_env
 
 def get_direction(action):
@@ -17,17 +16,14 @@ gym.register(
 )
 
 env = gym.make("gymnasium_env/GridWorld-v0", render_mode="human", size=5, obs_quantity=4)
-#env = FlattenObservation(env)
-#check_env(env)
 
 (state, _) = env.reset()
 print(f"Initial State: {state}")
 done = False
 truncated = False
-steps=1
+steps = 1
 while not done:
     action = env.action_space.sample()
-    #action = int(input("Enter action (0: right, 1: up, 2: left, 3: down): "))
     (next_state, reward, terminated, truncated, info) = env.step(action)
     print(f"Step: {steps} Action: {get_direction(action)}, Reward: {reward}, Terminated: {terminated}, Truncated: {truncated}, Info: {info}")
     done = terminated or truncated

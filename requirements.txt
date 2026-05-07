@@ -1,7 +1,7 @@
-gymnasium
-numpy
-typing
-stable-baselines3
-pygame
-tensorboard
-seaborn
+gymnasium==1.2.3
+numpy>=2.0
+stable-baselines3==2.8.0
+sb3-contrib==2.8.0
+pygame>=2.6
+tensorboard>=2.20
+seaborn>=0.13

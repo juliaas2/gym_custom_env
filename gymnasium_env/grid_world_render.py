@@ -5,10 +5,10 @@ import gymnasium as gym
 import pygame
 
 #
-# This code is based on the example from Gymnasium: 
+# This code is based on the example from Gymnasium:
 # https://gymnasium.farama.org/introduction/create_custom_env/
 #
-# This environment implements a simple grid world without obstacles. 
+# This environment implements a simple grid world without obstacles.
 # The agent (blue circle) must reach the target (red square) in as few steps as possible.
 #
 # The state is represented as a dictionary with the agent's and target's coordinates.
@@ -51,19 +51,12 @@ class GridWorldRenderEnv(gym.Env):
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
 
-        """
-        If human-rendering is used, `self.window` will be a reference
-        to the window that we draw to. `self.clock` will be a clock that is used
-        to ensure that the environment is rendered at the correct framerate in
-        human-mode. They will remain `None` until human-mode is used for the
-        first time.
-        """
         self.window = None
         self.clock = None
 
     def _get_obs(self):
         return {"agent": self._agent_location, "target": self._target_location}
-    
+
     def _get_info(self):
         return {
             "distance": np.linalg.norm(
@@ -71,7 +64,7 @@ class GridWorldRenderEnv(gym.Env):
             ),
             "size": self.size
         }
-    
+
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         # We need the following line to seed self.np_random
         super().reset(seed=seed)
@@ -93,7 +86,7 @@ class GridWorldRenderEnv(gym.Env):
             self._render_frame()
 
         return observation, info
-    
+
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]
@@ -113,8 +106,7 @@ class GridWorldRenderEnv(gym.Env):
             self._render_frame()
 
         return observation, reward, terminated, truncated, info
-    
-    
+
     def render(self):
         if self.render_mode == "rgb_array":
             return self._render_frame()
@@ -181,8 +173,8 @@ class GridWorldRenderEnv(gym.Env):
         else:  # rgb_array
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            )    
-        
+            )
+
     def close(self):
         if self.window is not None:
             pygame.display.quit()

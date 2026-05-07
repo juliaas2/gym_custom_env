@@ -5,10 +5,10 @@ import gymnasium as gym
 import pygame
 
 #
-# This code is based on the example from Gymnasium: 
+# This code is based on the example from Gymnasium:
 # https://gymnasium.farama.org/introduction/create_custom_env/
 #
-# This environment implements a simple grid world without obstacles. 
+# This environment implements a simple grid world without obstacles.
 # The agent (blue circle) must reach the target (red square) in as few steps as possible.
 #
 # The state is represented as a flattened array containing:
@@ -40,7 +40,7 @@ class GridWorldRenderEnv(gym.Env):
         # Define the agent and target location; randomly chosen in `reset` and updated in `step`
         self._agent_location = np.array([-1, -1], dtype=int)
         self._target_location = np.array([-1, -1], dtype=int)
-        self._neighbors = np.array([0,0,0,0], dtype=int)  #up, down, left, right
+        self._neighbors = np.array([0, 0, 0, 0], dtype=int)  # up, down, left, right
 
         # The state is represented with the agent's and target's location and the grid of neighbors
         self.observation_space = gym.spaces.Box(0, size - 1, shape=(2 + 2 + 4,), dtype=int)
@@ -58,13 +58,6 @@ class GridWorldRenderEnv(gym.Env):
         assert render_mode is None or render_mode in self.metadata["render_modes"]
         self.render_mode = render_mode
 
-        """
-        If human-rendering is used, `self.window` will be a reference
-        to the window that we draw to. `self.clock` will be a clock that is used
-        to ensure that the environment is rendered at the correct framerate in
-        human-mode. They will remain `None` until human-mode is used for the
-        first time.
-        """
         self.window = None
         self.clock = None
 
@@ -108,11 +101,11 @@ class GridWorldRenderEnv(gym.Env):
         while np.array_equal(self._target_location, self._agent_location):
             self._target_location = self.np_random.integers(
                 0, self.size, size=2, dtype=int
-            )        
+            )
 
         for _ in range(self.obs_quantity):
             obstacle_location = self._agent_location
-            while (np.array_equal(obstacle_location, self._agent_location) or 
+            while (np.array_equal(obstacle_location, self._agent_location) or
                    np.array_equal(obstacle_location, self._target_location) or
                    any(np.array_equal(obstacle_location, loc) for loc in self.obstacles_locations)):
                 obstacle_location = self.np_random.integers(0, self.size, size=2, dtype=int)
@@ -127,11 +120,11 @@ class GridWorldRenderEnv(gym.Env):
             self._render_frame()
 
         return observation, info
-    
+
     def distance(self, location, target):
-        x = (location[0] - target[0])*(location[0] - target[0])
-        y = (location[1] - target[1])*(location[1] - target[1])
-        return np.sqrt(x+y)
+        x = (location[0] - target[0]) * (location[0] - target[0])
+        y = (location[1] - target[1]) * (location[1] - target[1])
+        return np.sqrt(x + y)
 
     def step(self, action):
 
@@ -157,7 +150,7 @@ class GridWorldRenderEnv(gym.Env):
         current_distance = self.distance(self._agent_location, self._target_location)
 
         self.count_steps += 1
-        
+
         # An environment is completed if and only if the agent has reached the target
         terminated = np.array_equal(self._agent_location, self._target_location)
 
@@ -180,8 +173,7 @@ class GridWorldRenderEnv(gym.Env):
             self._render_frame()
 
         return observation, reward, terminated, truncated, info
-    
-    
+
     def render(self):
         if self.render_mode == "rgb_array":
             return self._render_frame()
@@ -259,8 +251,8 @@ class GridWorldRenderEnv(gym.Env):
         else:  # rgb_array
             return np.transpose(
                 np.array(pygame.surfarray.pixels3d(canvas)), axes=(1, 0, 2)
-            )    
-        
+            )
+
     def close(self):
         if self.window is not None:
             pygame.display.quit()

@@ -1,0 +1,26 @@
+{
+  "description": "GridWorld CPP evaluation artifact with model configuration and metrics.",
+  "summary": {
+    "agent": "ppo",
+    "model": "data\\recurrent_ppo_cpp_20x20_obs48_view5_steps100000.zip",
+    "grid_size": 20,
+    "obstacles": 48,
+    "max_steps": 800,
+    "view_size": 5,
+    "episodes": 100,
+    "seed": 123,
+    "coverage_target": 0.9,
+    "full_coverage_count": 0,
+    "good_coverage_count": 0,
+    "full_coverage_rate": 0.0,
+    "good_coverage_rate": 0.0,
+    "average_coverage": 0.036534090909090905,
+    "coverage_std": 0.03649660525648836,
+    "min_coverage": 0.002840909090909091,
+    "max_coverage": 0.2215909090909091,
+    "average_steps": 800.0,
+    "steps_std": 0.0,
+    "min_steps": 800,
+    "max_steps_observed": 800
+  }
+}
