@@ -1,0 +1,21 @@
+{
+  "average_coverage": 0.9563636183738708,
+  "average_coverage_percent": 95.63636016845703,
+  "average_reward": -13.157999038696289,
+  "average_steps": 104.72000122070312,
+  "deterministic": true,
+  "dim": 5,
+  "episodes": 100,
+  "full_coverage_count": 56,
+  "full_coverage_rate": 0.56,
+  "full_coverage_rate_percent": 56.00000000000001,
+  "max_coverage_percent": 100.0,
+  "max_steps": 200,
+  "min_coverage_percent": 59.09090805053711,
+  "min_steps": 22,
+  "model_path": "data\\ppo_cpp_20x20_obs48_steps1000_view5_seed242_20260507_231713_modelo_agressivo_boost1_curriculum.zip",
+  "obstacles": 3,
+  "std_coverage_percent": 7.494350433349609,
+  "std_steps": 84.50373840332031,
+  "view_radius": 2
+}

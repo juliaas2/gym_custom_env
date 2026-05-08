@@ -1,0 +1,21 @@
+{
+  "average_coverage": 0.7454545497894287,
+  "average_coverage_percent": 74.54545593261719,
+  "average_reward": -138.33200073242188,
+  "average_steps": 485.739990234375,
+  "deterministic": true,
+  "dim": 10,
+  "episodes": 50,
+  "full_coverage_count": 2,
+  "full_coverage_rate": 0.04,
+  "full_coverage_rate_percent": 4.0,
+  "max_coverage_percent": 100.0,
+  "max_steps": 500,
+  "min_coverage_percent": 3.409090995788574,
+  "min_steps": 129,
+  "model_path": "C:\\Users\\Julia\\facul\\ademias\\gym_custom_env\\data\\ppo_cpp_20x20_obs48_steps1000_view5_seed42_20260507_221615_modelo_final_20x20_curriculum.zip",
+  "obstacles": 12,
+  "std_coverage_percent": 23.023075103759766,
+  "std_steps": 69.91960906982422,
+  "view_radius": 2
+}

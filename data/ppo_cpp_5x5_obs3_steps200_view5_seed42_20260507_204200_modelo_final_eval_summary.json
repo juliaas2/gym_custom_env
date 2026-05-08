@@ -1,0 +1,22 @@
+{
+  "average_coverage": 0.9627273082733154,
+  "average_coverage_percent": 96.2727279663086,
+  "average_reward": 10.07800006866455,
+  "average_steps": 51.959999084472656,
+  "deterministic": true,
+  "dim": 5,
+  "episodes": 50,
+  "full_coverage_count": 42,
+  "full_coverage_rate": 0.84,
+  "full_coverage_rate_percent": 84.0,
+  "max_coverage_percent": 100.0,
+  "max_steps": 200,
+  "min_coverage_percent": 13.636363983154297,
+  "min_steps": 21,
+  "mixed_training_envs": [],
+  "model_path": "data\\ppo_cpp_5x5_obs3_steps200_view5_seed42_20260507_204200_modelo_final.zip",
+  "obstacles": 3,
+  "std_coverage_percent": 13.289217948913574,
+  "std_steps": 64.61980438232422,
+  "view_radius": 2
+}

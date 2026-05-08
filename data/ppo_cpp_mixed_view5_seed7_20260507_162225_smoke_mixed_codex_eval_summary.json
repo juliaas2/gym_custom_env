@@ -1,0 +1,41 @@
+{
+  "average_coverage": 0.045340050011873245,
+  "average_coverage_percent": 4.534005165100098,
+  "average_reward": 8.5,
+  "average_steps": 20.0,
+  "deterministic": true,
+  "dim": 20,
+  "episodes": 1,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "max_coverage_percent": 4.534005165100098,
+  "max_steps": 20,
+  "min_coverage_percent": 4.534005165100098,
+  "min_steps": 20,
+  "mixed_training_envs": [
+    {
+      "max_steps": 20,
+      "obs_quantity": 1,
+      "size": 5,
+      "weight": 1.0
+    },
+    {
+      "max_steps": 20,
+      "obs_quantity": 2,
+      "size": 10,
+      "weight": 1.0
+    },
+    {
+      "max_steps": 20,
+      "obs_quantity": 3,
+      "size": 20,
+      "weight": 1.0
+    }
+  ],
+  "model_path": "data\\ppo_cpp_mixed_view5_seed7_20260507_162225_smoke_mixed_codex.zip",
+  "obstacles": 3,
+  "std_coverage_percent": 0.0,
+  "std_steps": 0.0,
+  "view_radius": 2
+}

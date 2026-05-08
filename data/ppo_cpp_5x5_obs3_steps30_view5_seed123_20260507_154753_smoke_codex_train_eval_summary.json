@@ -1,0 +1,21 @@
+{
+  "average_coverage": 0.13636364042758942,
+  "average_coverage_percent": 13.636363983154297,
+  "average_reward": -20.0,
+  "average_steps": 30.0,
+  "deterministic": true,
+  "dim": 5,
+  "episodes": 2,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "max_coverage_percent": 18.18181800842285,
+  "max_steps": 30,
+  "min_coverage_percent": 9.090909004211426,
+  "min_steps": 30,
+  "model_path": "data\\ppo_cpp_5x5_obs3_steps30_view5_seed123_20260507_154753_smoke_codex.zip",
+  "obstacles": 3,
+  "std_coverage_percent": 4.545454502105713,
+  "std_steps": 0.0,
+  "view_radius": 2
+}

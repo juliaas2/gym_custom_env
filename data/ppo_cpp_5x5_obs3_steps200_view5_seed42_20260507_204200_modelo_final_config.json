@@ -1,0 +1,32 @@
+{
+  "environment": {
+    "dim": 5,
+    "id": "gymnasium_env/GridWorldCPP-v0",
+    "max_steps": 200,
+    "mixed_training_envs": [],
+    "observation": "agent position/coverage plus local 5x5 matrix when view_radius=2",
+    "obstacles": 3,
+    "view_radius": 2,
+    "view_size": 5
+  },
+  "log_dir": "log\\ppo_cpp_5x5_obs3_steps200_view5_seed42_20260507_204200_modelo_final",
+  "mode": "train",
+  "model_path": "data\\ppo_cpp_5x5_obs3_steps200_view5_seed42_20260507_204200_modelo_final.zip",
+  "ppo": {
+    "batch_size": 256,
+    "clip_range": 0.2,
+    "device": "cpu",
+    "ent_coef": 0.05,
+    "eval_episodes_during_train": 20,
+    "eval_freq": 0,
+    "gae_lambda": 0.95,
+    "gamma": 0.995,
+    "learning_rate": 0.0003,
+    "n_steps": 2048,
+    "net_layers": 2,
+    "net_width": 256,
+    "seed": 42,
+    "total_timesteps": 1000000
+  },
+  "run_id": "ppo_cpp_5x5_obs3_steps200_view5_seed42_20260507_204200_modelo_final"
+}

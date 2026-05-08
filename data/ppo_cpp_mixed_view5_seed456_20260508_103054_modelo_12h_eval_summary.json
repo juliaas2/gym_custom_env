@@ -1,0 +1,41 @@
+{
+  "average_coverage": 0.712954580783844,
+  "average_coverage_percent": 71.29545593261719,
+  "average_reward": -153.77999877929688,
+  "average_steps": 492.3800048828125,
+  "deterministic": true,
+  "dim": 10,
+  "episodes": 100,
+  "full_coverage_count": 2,
+  "full_coverage_rate": 0.02,
+  "full_coverage_rate_percent": 2.0,
+  "max_coverage_percent": 100.0,
+  "max_steps": 500,
+  "min_coverage_percent": 12.5,
+  "min_steps": 118,
+  "mixed_training_envs": [
+    {
+      "max_steps": 200,
+      "obs_quantity": 3,
+      "size": 5,
+      "weight": 3.0
+    },
+    {
+      "max_steps": 500,
+      "obs_quantity": 12,
+      "size": 10,
+      "weight": 4.0
+    },
+    {
+      "max_steps": 1000,
+      "obs_quantity": 48,
+      "size": 20,
+      "weight": 5.0
+    }
+  ],
+  "model_path": "data\\ppo_cpp_mixed_view5_seed456_20260508_103054_modelo_12h.zip",
+  "obstacles": 12,
+  "std_coverage_percent": 21.415929794311523,
+  "std_steps": 53.34018325805664,
+  "view_radius": 2
+}

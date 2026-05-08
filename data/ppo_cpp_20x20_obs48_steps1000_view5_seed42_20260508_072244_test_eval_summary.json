@@ -1,0 +1,21 @@
+{
+  "average_coverage": 0.6405397653579712,
+  "average_coverage_percent": 64.0539779663086,
+  "average_reward": -159.60101318359375,
+  "average_steps": 1000.0,
+  "deterministic": true,
+  "dim": 20,
+  "episodes": 100,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "max_coverage_percent": 92.8977279663086,
+  "max_steps": 1000,
+  "min_coverage_percent": 6.25,
+  "min_steps": 1000,
+  "model_path": "data\\modelo_principal.zip",
+  "obstacles": 48,
+  "std_coverage_percent": 19.789758682250977,
+  "std_steps": 0.0,
+  "view_radius": 2
+}

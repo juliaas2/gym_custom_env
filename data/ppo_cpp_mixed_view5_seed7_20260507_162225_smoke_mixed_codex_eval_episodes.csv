@@ -1,0 +1,2 @@
+episode,full_coverage,coverage,coverage_percent,steps,total_reward,visited_cells,total_free_cells,terminated,truncated
+1,False,0.04534005037783375,4.534005037783375,20,8.500000000000005,18,397,False,True

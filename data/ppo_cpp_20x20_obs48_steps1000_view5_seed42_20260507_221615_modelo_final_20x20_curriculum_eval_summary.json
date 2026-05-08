@@ -1,0 +1,23 @@
+{
+  "average_coverage": 0.5194886326789856,
+  "average_coverage_percent": 51.9488639831543,
+  "average_reward": -267.1260070800781,
+  "average_steps": 1000.0,
+  "deterministic": true,
+  "dim": 20,
+  "episodes": 50,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "max_coverage_percent": 94.6022720336914,
+  "max_steps": 1000,
+  "min_coverage_percent": 5.3977274894714355,
+  "min_steps": 1000,
+  "mixed_training_envs": [],
+  "model_path": "data\\ppo_cpp_20x20_obs48_steps1000_view5_seed42_20260507_221615_modelo_final_20x20_curriculum.zip",
+  "obstacles": 48,
+  "source_model_path": "C:\\Users\\Julia\\facul\\ademias\\gym_custom_env\\data\\ppo_cpp_10x10_obs12_steps500_view5_seed42_20260507_215623_modelo_final_10x10_curriculum.zip",
+  "std_coverage_percent": 22.19569969177246,
+  "std_steps": 0.0,
+  "view_radius": 2
+}

@@ -1,0 +1,21 @@
+{
+  "average_coverage": 0.011193182319402695,
+  "average_coverage_percent": 1.1193182468414307,
+  "average_reward": -542.676025390625,
+  "average_steps": 1000.0,
+  "deterministic": true,
+  "dim": 20,
+  "episodes": 100,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "max_coverage_percent": 5.3977274894714355,
+  "max_steps": 1000,
+  "min_coverage_percent": 0.28409090638160706,
+  "min_steps": 1000,
+  "model_path": "data\\ppo_cpp_mixed_view5_seed7_20260507_162225_smoke_mixed_codex_best.zip",
+  "obstacles": 48,
+  "std_coverage_percent": 1.0249501466751099,
+  "std_steps": 0.0,
+  "view_radius": 2
+}

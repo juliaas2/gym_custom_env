@@ -1,0 +1,32 @@
+{
+  "environment": {
+    "dim": 10,
+    "id": "gymnasium_env/GridWorldCPP-v0",
+    "max_steps": 500,
+    "mixed_training_envs": [],
+    "observation": "agent position/coverage plus local 5x5 matrix when view_radius=2",
+    "obstacles": 12,
+    "view_radius": 2,
+    "view_size": 5
+  },
+  "log_dir": "log\\ppo_cpp_10x10_obs12_steps500_view5_seed42_20260507_215623_modelo_final_10x10_curriculum",
+  "mode": "curriculum",
+  "model_path": "data\\ppo_cpp_10x10_obs12_steps500_view5_seed42_20260507_215623_modelo_final_10x10_curriculum.zip",
+  "ppo": {
+    "batch_size": 256,
+    "clip_range": 0.2,
+    "device": "cpu",
+    "ent_coef": 0.05,
+    "eval_episodes_during_train": 20,
+    "eval_freq": 0,
+    "gae_lambda": 0.95,
+    "gamma": 0.995,
+    "learning_rate": 0.0003,
+    "n_steps": 2048,
+    "net_layers": 2,
+    "net_width": 256,
+    "seed": 42,
+    "total_timesteps": 1500000
+  },
+  "run_id": "ppo_cpp_10x10_obs12_steps500_view5_seed42_20260507_215623_modelo_final_10x10_curriculum"
+}
