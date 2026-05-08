@@ -1,0 +1,27 @@
+{
+  "algorithm": "recurrent_ppo",
+  "env": {
+    "max_steps": 200,
+    "obstacles": 3,
+    "size": 5,
+    "view_radius": 2
+  },
+  "log_dir": "log\\recurrent_ppo_5x5_obs3_steps200_vr2_seed42_20260508_162357",
+  "model_path": "models\\recurrent_ppo_5x5_obs3_steps200_vr2_seed42_20260508_162357.zip",
+  "train": {
+    "batch_size": 128,
+    "device": "cpu",
+    "ent_coef": 0.01,
+    "eval_episodes": 100,
+    "learning_rate": 0.0003,
+    "lstm_hidden_size": 128,
+    "lstm_layers": 2,
+    "max_steps": 0,
+    "n_steps": 512,
+    "obstacles": 3,
+    "seed": 42,
+    "size": 5,
+    "timesteps": 700000,
+    "view_radius": 2
+  }
+}

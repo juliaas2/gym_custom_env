@@ -1,0 +1,36 @@
+{
+  "algorithm": "recurrent_ppo",
+  "episodes_per_size": 30,
+  "sizes": {
+    "10x10": {
+      "average_coverage": 0.44431814551353455,
+      "average_coverage_percent": 44.43181610107422,
+      "average_reward": -305.3168640136719,
+      "average_steps": 500.0,
+      "episodes": 30,
+      "full_coverage_count": 0,
+      "full_coverage_rate": 0.0,
+      "full_coverage_rate_percent": 0.0
+    },
+    "20x20": {
+      "average_coverage": 0.2336173951625824,
+      "average_coverage_percent": 23.361740112304688,
+      "average_reward": -676.251220703125,
+      "average_steps": 1000.0,
+      "episodes": 30,
+      "full_coverage_count": 0,
+      "full_coverage_rate": 0.0,
+      "full_coverage_rate_percent": 0.0
+    },
+    "5x5": {
+      "average_coverage": 0.7378787994384766,
+      "average_coverage_percent": 73.78787994384766,
+      "average_reward": -120.08711242675781,
+      "average_steps": 200.0,
+      "episodes": 30,
+      "full_coverage_count": 0,
+      "full_coverage_rate": 0.0,
+      "full_coverage_rate_percent": 0.0
+    }
+  }
+}

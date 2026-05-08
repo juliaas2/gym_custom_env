@@ -1,0 +1,14 @@
+{
+  "average_coverage": 0.5208333730697632,
+  "average_coverage_percent": 52.083335876464844,
+  "average_reward": -327.3952941894531,
+  "average_steps": 500.0,
+  "episodes": 30,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0,
+  "source_model": "models\\recurrent_ppo_5x5_obs3_steps200_vr2_seed42_20260508_162357.zip",
+  "target_max_steps": 500,
+  "target_obstacles": 12,
+  "target_size": 10
+}

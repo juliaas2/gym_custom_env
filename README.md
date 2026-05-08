@@ -325,6 +325,10 @@ Usando benchmark direto dos candidatos em `data/*.zip` (40 episodios por ambient
 
 Observacao: esse criterio prioriza cobertura media (average coverage), nao full coverage.
 
+Esse arquivo `modelo_agressivo_boost1_*` não vem do pipeline `train/` com RecurrentPPO: foi treinado com **PPO + MultiInputPolicy** via `train_grid_world_cpp.py` em modo **curriculum 20x20** (48 obstáculos, 1000 passos, `view_radius=2`). O sufixo `boost1` corresponde ao `--run-name modelo_agressivo_boost1` usado ao salvar o checkpoint.
+
+O script `treino_agressivo_noite.ps1` automatiza esse tipo de treino pesado em **vários rounds** (cada um com muitos timesteps em curriculum 20x20), sempre partindo de um `*modelo_final_20x20*.zip` em `data/`, usando justamente esse padrão de nome `modelo_agressivo_boost<N>`. Ou seja: o modelo recomendado é um **checkpoint desse tipo de “boost agressivo”**, escolhido aqui apenas pelo maior **average coverage** no benchmark.
+
 ### Comandos para reproduzir a avaliação do melhor modelo salvo
 
 ```powershell
