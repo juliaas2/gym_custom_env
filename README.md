@@ -252,3 +252,85 @@ O ambiente CPP possui renderização visual com as seguintes indicações:
 - **Branco**: células livres ainda não visitadas
 - **Texto no topo**: cobertura atual e número de passos
 
+## Pipeline em estágios (PPO vs RecurrentPPO)
+
+Foi adicionada uma estrutura de experimentos por etapas:
+
+- `envs/`: criação/registro de ambiente para os novos scripts.
+- `train/`: treinamento baseline PPO, RecurrentPPO e curriculum.
+- `evaluation/`: avaliação de generalização em 5x5, 10x10 e 20x20.
+- `reports/`: relatório comparativo PPO vs LSTM.
+- `models/`: modelos gerados por esses scripts.
+
+### Etapa 1: baseline PPO (5x5)
+
+```powershell
+python train/train_ppo_baseline.py --size 5 --obstacles 3 --timesteps 500000
+```
+
+### Etapa 2: RecurrentPPO + MultiInputLstmPolicy (5x5)
+
+```powershell
+python train/train_recurrent_ppo.py --size 5 --obstacles 3 --timesteps 700000 --n-steps 512 --batch-size 128 --lstm-hidden-size 128 --lstm-layers 2
+```
+
+### Etapa 3: curriculum (5x5 -> 10x10)
+
+```powershell
+python train/curriculum_recurrent_ppo.py --source-model models/NOME_MODELO_5x5.zip --target-size 10 --target-obstacles 12 --target-max-steps 500 --timesteps 700000
+```
+
+### Etapa 4: generalização (testar em 5, 10 e 20)
+
+```powershell
+python evaluation/evaluate_generalization.py --model-path models/NOME_DO_MODELO.zip --algorithm recurrent_ppo --episodes 100
+```
+
+Para baseline PPO:
+
+```powershell
+python evaluation/evaluate_generalization.py --model-path models/NOME_DO_MODELO.zip --algorithm ppo --episodes 100
+```
+
+### Etapa 5: relatório comparativo
+
+```powershell
+python reports/compare_ppo_vs_lstm.py --ppo-summary evaluation/ARQUIVO_PPO_summary.json --lstm-summary evaluation/ARQUIVO_LSTM_summary.json
+```
+
+### Execução completa (1 comando)
+
+Para rodar todo o processo automaticamente (baseline PPO, sweep RecurrentPPO 5x5, curriculum para 10x10, avaliação 5/10/20 e relatório comparativo):
+
+```powershell
+python train/run_full_pipeline.py --device cpu
+```
+
+Exemplo com sweep menor (mais rápido):
+
+```powershell
+python train/run_full_pipeline.py --sweep-lr 0.0003 --sweep-ent-coef 0.01 --sweep-lstm-hidden 128 --timesteps-recurrent-5 300000 --timesteps-curriculum-10 300000
+```
+
+## Modelo com maior cobertura media
+
+Usando benchmark direto dos candidatos em `data/*.zip` (40 episodios por ambiente, politica deterministica), o modelo com maior cobertura media foi:
+
+- Modelo recomendado: `data/ppo_cpp_20x20_obs48_steps1000_view5_seed242_20260507_231713_modelo_agressivo_boost1_curriculum.zip`
+- Alias equivalente: `data/modelo_principal.zip` (mesmos resultados no benchmark)
+- 5x5 (3 obstaculos): Average Coverage `95.68%`
+- 10x10 (12 obstaculos): Average Coverage `80.74%`
+- 20x20 (48 obstaculos): Average Coverage `66.18%`
+- Cobertura media global (5x5 + 10x10 + 20x20): `80.87%`
+
+Observacao: esse criterio prioriza cobertura media (average coverage), nao full coverage.
+
+### Comandos para reproduzir a avaliação do melhor modelo salvo
+
+```powershell
+$modelo = "data/ppo_cpp_20x20_obs48_steps1000_view5_seed242_20260507_231713_modelo_agressivo_boost1_curriculum.zip"
+python train_grid_world_cpp.py test 5 3 200 --model-path $modelo --episodes 100 --view-radius 2
+python train_grid_world_cpp.py test 10 12 500 --model-path $modelo --episodes 100 --view-radius 2
+python train_grid_world_cpp.py test 20 48 1000 --model-path $modelo --episodes 100 --view-radius 2
+```
+

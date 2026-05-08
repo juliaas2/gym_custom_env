@@ -1,0 +1,10 @@
+{
+  "average_coverage": 0.4204545319080353,
+  "average_coverage_percent": 42.04545211791992,
+  "average_reward": -206.8524932861328,
+  "average_steps": 200.0,
+  "episodes": 100,
+  "full_coverage_count": 0,
+  "full_coverage_rate": 0.0,
+  "full_coverage_rate_percent": 0.0
+}
