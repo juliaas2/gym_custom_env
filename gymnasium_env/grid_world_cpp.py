@@ -21,10 +21,10 @@ import pygame
 # The observation space includes:
 #   - Agent's (x, y) location (normalized)
 #   - Coverage ratio (proportion of free cells visited)
-#   - A 3x3 matrix of neighboring cells centered on the agent,
-#     where (1,1) is the agent's position and each cell is:
+#   - A 5x5 matrix of neighboring cells centered on the agent,
+#     where (2,2) is the agent's position and each cell is:
 #       0 = free (not yet visited), 1 = obstacle or wall (including out-of-bounds),
-#       2 = already visited position.
+#       2 = already visited position, 3 = current agent position.
 #     Cells outside the grid boundaries are treated as walls (1).
 #
 # The episode ends when all free cells are visited or max steps is reached.
@@ -34,21 +34,30 @@ class GridWorldCPPEnv(gym.Env):
 
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size: int = 5, obs_quantity: int = 3, max_steps: int = 200):
+    def __init__(
+        self,
+        render_mode=None,
+        size: int = 5,
+        obs_quantity: int = 3,
+        max_steps: int = 200,
+        view_radius: int = 2,
+    ):
         self.size = size
         self.window_size = 512
         self.obs_quantity = obs_quantity
         self.obstacles_locations = []
         self.count_steps = 0
         self.max_steps = max_steps
+        self.view_radius = view_radius
+        self.view_size = (2 * self.view_radius) + 1
 
         # Track visited cells
         self.visited = set()
 
         self._agent_location = np.array([-1, -1], dtype=int)
-        self._neighbors = np.zeros((3, 3), dtype=int)  # 3x3 matrix centered on agent
+        self._neighbors = np.zeros((self.view_size, self.view_size), dtype=int)
 
-        # Observation: Dict with agent info (x, y, coverage) and 3x3 neighbor matrix
+        # Observation: Dict with agent info (x, y, coverage) and local neighbor matrix.
         self.observation_space = gym.spaces.Dict({
             "agent": gym.spaces.Box(
                 low=np.array([0.0, 0.0, 0.0], dtype=np.float32),
@@ -56,8 +65,8 @@ class GridWorldCPPEnv(gym.Env):
                 dtype=np.float32
             ),
             "neighbors": gym.spaces.Box(
-                low=np.zeros((3, 3), dtype=np.float32),
-                high=np.full((3, 3), 2.0, dtype=np.float32),
+                low=np.zeros((self.view_size, self.view_size), dtype=np.float32),
+                high=np.full((self.view_size, self.view_size), 3.0, dtype=np.float32),
                 dtype=np.float32
             ),
         })
@@ -102,28 +111,32 @@ class GridWorldCPPEnv(gym.Env):
             "total_free_cells": self.total_free_cells,
             "steps": self.count_steps,
             "size": self.size,
+            "view_size": self.view_size,
         }
 
     def set_neighbors(self, obstacles_locations):
-        # Create a 3x3 matrix centered on the agent's location.
-        # Row index i corresponds to agent_y + (i-1), col index j to agent_x + (j-1).
-        # 0 = free (not yet visited), 1 = obstacle or wall (out-of-bounds), 2 = already visited.
-        matrix = np.zeros((3, 3), dtype=int)
-        for i in range(3):
-            for j in range(3):
-                nx = self._agent_location[0] + (j - 1)
-                ny = self._agent_location[1] + (i - 1)
-                neighbor = np.array([nx, ny])
+        # Create a local matrix centered on the agent's location.
+        # 0 = free, 1 = obstacle/wall, 2 = already visited, 3 = current agent.
+        matrix = np.zeros((self.view_size, self.view_size), dtype=int)
+        obstacle_set = {tuple(location) for location in obstacles_locations}
+        for i in range(self.view_size):
+            for j in range(self.view_size):
+                nx = self._agent_location[0] + (j - self.view_radius)
+                ny = self._agent_location[1] + (i - self.view_radius)
                 if not (0 <= nx < self.size and 0 <= ny < self.size):
                     matrix[i][j] = 1
-                elif any(np.array_equal(neighbor, loc) for loc in obstacles_locations):
+                elif (nx, ny) in obstacle_set:
                     matrix[i][j] = 1
                 elif (nx, ny) in self.visited:
                     matrix[i][j] = 2
+        matrix[self.view_radius][self.view_radius] = 3
         self._neighbors = matrix
 
     def reset(self, seed: Optional[int] = None, options: Optional[dict] = None):
         super().reset(seed=seed)
+        if self.obs_quantity >= self.size * self.size:
+            raise ValueError("obs_quantity must be smaller than the number of grid cells")
+
         self.count_steps = 0
         self.obstacles_locations = []
         self.visited = set()
@@ -165,27 +178,34 @@ class GridWorldCPPEnv(gym.Env):
         if any(np.array_equal(self._agent_location, loc) for loc in self.obstacles_locations):
             self._agent_location = old_location
 
-        self.set_neighbors(self.obstacles_locations)
-        self.count_steps += 1
-
-        # --- CPP Reward Function ---
+        # --- CPP Reward Function (IMPROVED) ---
         current_pos = tuple(self._agent_location)
         is_new_cell = current_pos not in self.visited
         stayed_in_place = np.array_equal(self._agent_location, old_location)
+        
+        # Track previous coverage for incremental reward
+        old_coverage = self.coverage_ratio
+        self.count_steps += 1
 
         # Base step penalty
         reward = -0.1
 
         if stayed_in_place:
-            # Hitting wall or obstacle
-            reward -= 0.5
+            # Hitting wall or obstacle - STRONGER penalty to avoid walls
+            reward -= 1.0  # Was -0.5, now -1.0
         elif is_new_cell:
             # Reward for exploring new cell
             reward += 1.0
             self.visited.add(current_pos)
         else:
-            # Penalty for revisiting
-            reward -= 0.3
+            # Penalty for revisiting - STRONGER to encourage new exploration
+            reward -= 0.5  # Was -0.3, now -0.5
+
+        # Add incremental coverage bonus (smoother learning signal)
+        new_coverage = self.coverage_ratio
+        if new_coverage > old_coverage:
+            # Bonus proportional to coverage progress
+            reward += 0.5 * (new_coverage - old_coverage)
 
         # Check if full coverage achieved
         full_coverage = len(self.visited) >= self.total_free_cells
@@ -201,6 +221,7 @@ class GridWorldCPPEnv(gym.Env):
         else:
             truncated = False
 
+        self.set_neighbors(self.obstacles_locations)
         observation = self._get_obs()
         info = self._get_info()
 
@@ -214,8 +235,11 @@ class GridWorldCPPEnv(gym.Env):
             return self._render_frame()
 
     def _render_frame(self):
-        if self.window is None and self.render_mode == "human":
+        if not pygame.get_init():
             pygame.init()
+        if not pygame.font.get_init():
+            pygame.font.init()
+        if self.window is None and self.render_mode == "human":
             pygame.display.init()
             self.window = pygame.display.set_mode(
                 (self.window_size, self.window_size)

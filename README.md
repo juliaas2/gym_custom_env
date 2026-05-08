@@ -15,6 +15,64 @@ source venv/bin/activate # para ativar o ambiente virtual
 pip install -r requirements.txt # para instalar as dependências
 ```
 
+## Comandos Essenciais para Rodar
+
+### Setup inicial
+```powershell
+# Criar ambiente virtual
+python -m venv .venv
+
+# Ativar ambiente virtual (Windows)
+.venv\Scripts\Activate.ps1
+
+# Instalar dependências
+pip install -r requirements.txt
+```
+
+### Exemplos básicos
+```powershell
+# GridWorld simples
+python train_grid_world_v0.py train       # treina o agente
+python train_grid_world_v0.py test        # testa o agente treinado
+
+# GridWorld com renderização
+python train_grid_world_render_v0.py train
+python train_grid_world_render_v0.py test
+
+# GridWorld 3D
+python train_grid_world_3D.py train       # treinar
+python train_grid_world_3D.py test        # testar
+python train_grid_world_3D.py run         # visualizar um episódio
+
+# GridWorld com obstáculos
+python train_grid_world_obstacles.py train
+python train_grid_world_obstacles.py test
+```
+
+### Ambiente CPP (Coverage Path Planning)
+```powershell
+# Treinar em um grid 5x5 com 3 obstáculos
+python train_grid_world_cpp.py train 5 3 200 1000000
+
+# Treinar com nome customizado
+python train_grid_world_cpp.py train 5 3 200 1000000 --run-name ppo5_view5 --eval-episodes 100 --view-radius 2
+
+# Testar modelo treinado
+python train_grid_world_cpp.py test 5 3 200 --model-path data/NOME_DO_MODELO.zip
+
+# Visualizar um episódio
+python train_grid_world_cpp.py run 5 3 200 --model-path data/NOME_DO_MODELO.zip
+
+# Curriculum learning (ambientes progressivamente maiores)
+python train_grid_world_cpp.py curriculum 10 12 500 500000 --model-path data/modelo_5x5.zip
+```
+
+### TensorBoard
+```powershell
+# Visualizar métricas de treinamento
+tensorboard --logdir=log
+```
+
 ## Primeiro exemplo: ambiente GridWorld sem renderização
 
 O primeiro exemplo é um ambiente simples de grid world. O agente pode se mover para cima, baixo, esquerda ou direita. O objetivo do agente é chegar ao objetivo (goal) o mais rápido possível. O ambiente é definido na classe `GridWorldEnv` que está no arquivo `grid_world.py` dentro da pasta `gymnasium_env`. 
@@ -134,10 +192,11 @@ O espaço de observação para este ambiente é:
 
 * Localização do agente normalizado com relação a dimensão do grid (x/dim, y/dim)
 * Razão de células livres visitadas ou cobertura (células visitadas / total de células)
-* Uma matriz 3x3 representando as células vizinhas ao redor do agente, onde (1,1) é a posição do agente e cada célula é:
+* Uma matriz 5x5 representando as células vizinhas ao redor do agente, onde (2,2) é a posição do agente e cada célula é:
   - 0 = livre (ainda não visitada)
   - 1 = obstáculo ou parede (incluindo limites fora do grid)
   - 2 = posição já visitada
+  - 3 = posição atual do agente
   - Células fora dos limites do grid são tratadas como paredes (1).
 
 ### Como executar
@@ -154,22 +213,32 @@ Para **treinar** um agente com PPO para um ambiente 5x5, 3 obstáculos, máximo 
 python train_grid_world_cpp.py train 5 3 200 500000
 ```
 
+O treinamento salva o modelo `.zip`, a configuração `.json` e os resultados de avaliação `.csv`/`.json` na pasta `data`.
+
+Para treinar **um único modelo** que seja avaliado nos ambientes 5x5, 10x10 e 20x20, use o arquivo:
+
+```powershell
+.\comandos_ppo_cpp.ps1
+```
+
+Esse script treina com episódios misturados de `5:3:200`, `10:12:500` e `20:48:1000`, salva o melhor checkpoint e testa o mesmo `.zip` nos três tamanhos. O ambiente `20x20` recebe peso maior no treino para tentar atingir cobertura média acima de 90%.
+
 Para **testar** o agente treinado em 100 episódios em um ambiente 5x5 com 3 obstáculos:
 
 ```bash
-python train_grid_world_cpp.py test 5 3
+python train_grid_world_cpp.py test 5 3 200 --model-path data/NOME_DO_MODELO.zip
 ```
 
 Para **visualizar** o agente treinado em um único episódio em um ambiente 5x5 com 3 obstáculos:
 
 ```bash
-python train_grid_world_cpp.py run 5 3
+python train_grid_world_cpp.py run 5 3 200 --model-path data/NOME_DO_MODELO.zip
 ```
 
 Para treinar no modo de **curriculum learning**, onde o agente é treinado progressivamente em ambientes mais difíceis (5x5 com 3 obstáculos, depois 10x10 com 12 obstáculos, e finalmente 20x20 com 48 obstáculos):
 
 ```bash
-python train_grid_world_cpp.py curriculum 5 3 200 500000
+python train_grid_world_cpp.py curriculum 10 12 500 500000 --model-path data/NOME_DO_MODELO_5x5.zip
 ```
 
 Neste caso, você terá que informar também o modelo inicial da rede. Geralmente, é um modelo pré-treinado em um ambiente mais simples (ex: 5x5 com 3 obstáculos) que será utilizado como ponto de partida para o treinamento em ambientes mais complexos.
